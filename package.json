@@ -1,0 +1,14 @@
+{
+    "name": "felicitaciones-romanticas",
+    "version": "1.0.0",
+    "description": "Pagina para crear y compartir felicitaciones romanticas mediante QR",
+    "main": "servidor.js",
+    "scripts": {
+        "start": "node servidor.js",
+        "dev": "node servidor.js"
+    },
+    "dependencies": {
+        "express": "^5.1.0",
+        "sqlite3": "^5.1.7"
+    }
+}
