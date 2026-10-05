@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Para ti 💖</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient( 135deg, #ffdce8, #fff6f9);
+            color: #542b39;
+        }
+        
+        .contenedor {
+            width: 92%;
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 0 70px;
+        }
+        
+        .titulo {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 65px;
+            color: #d6336c;
+            margin-bottom: 5px;
+        }
+        
+        .subtitulo {
+            text-align: center;
+            color: #875c6c;
+            margin-bottom: 40px;
+        }
+        
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat( auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+        
+        .galeria img {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(120, 40, 70, 0.18);
+            transition: 0.3s;
+        }
+        
+        .galeria img:hover {
+            transform: scale(1.02);
+        }
+        
+        .carta-seccion {
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .carta-titulo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 45px;
+            color: #d6336c;
+        }
+        
+        .sobre {
+            position: relative;
+            margin: 40px auto;
+            max-width: 650px;
+            min-height: 400px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(120, 40, 70, 0.2);
+            padding: 55px 40px;
+        }
+        
+        .sobre::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: #f5a9bd;
+            clip-path: polygon( 0 0, 50% 100%, 100% 0);
+            border-radius: 20px 20px 0 0;
+            opacity: 0.8;
+        }
+        
+        .carta {
+            position: relative;
+            z-index: 2;
+            margin-top: 40px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .corazon {
+            text-align: center;
+            font-size: 40px;
+            margin-top: 40px;
+        }
+        
+        .cargando {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 35px;
+            color: #d6336c;
+            padding: 80px 0;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .error h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 45px;
+            color: #d6336c;
+        }
+        
+        @media (max-width: 600px) {
+            .titulo {
+                font-size: 50px;
+            }
+            .sobre {
+                padding: 45px 25px;
+            }
+            .carta {
+                font-size: 24px;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="contenedor">
+
+        <div id="contenido">
+
+            <div class="cargando">
+                Preparando algo especial... 💕
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        async function cargarFelicitacion() {
+
+            const parametros =
+                new URLSearchParams(window.location.search);
+
+            const id =
+                parametros.get("id");
+
+
+            if (!id) {
+
+                mostrarError();
+
+                return;
+
+            }
+
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        `/api/felicitaciones/${id}`
+                    );
+
+
+                if (!respuesta.ok) {
+
+                    mostrarError();
+
+                    return;
+
+                }
+
+
+                const datos =
+                    await respuesta.json();
+
+
+                mostrarFelicitacion(datos);
+
+            } catch (error) {
+
+                console.error(error);
+
+                mostrarError();
+
+            }
+
+        }
+
+
+        function mostrarFelicitacion(datos) {
+
+            const contenido =
+                document.getElementById("contenido");
+
+
+            let fotosHTML = "";
+
+
+            datos.fotos.forEach(foto => {
+
+                fotosHTML += `
+            <img src="${foto}" alt="Recuerdo">
+        `;
+
+            });
+
+
+            contenido.innerHTML = `
+
+        <h1 class="titulo">
+            Para ti 💖
+        </h1>
+
+        <p class="subtitulo">
+            Alguien preparó esto especialmente para ti
+        </p>
+
+
+        ${
+            datos.fotos.length > 0
+            ?
+            `
+            <div class="galeria">
+                ${fotosHTML}
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        ${
+            datos.carta
+            ?
+            `
+
+            <section class="carta-seccion">
+
+                <div class="carta-titulo">
+                    Una carta para ti 💌
+                </div>
+
+
+                <div class="sobre">
+
+                    <div class="carta">
+                        ${escapeHTML(datos.carta)}
+                    </div>
+
+                </div>
+
+            </section>
+
+            `
+            :
+            ""
+        }
+
+
+        <div class="corazon">
+            ❤️
+        </div>
+
+    `;
+
+}
+
+
+function escapeHTML(texto) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = texto;
+
+    return div.innerHTML;
+
+}
+
+
+function mostrarError() {
+
+    document.getElementById("contenido").innerHTML = `
+
+        <div class="error">
+
+            <h2>
+                Ups... 💔
+            </h2>
+
+            <p>
+                No pudimos encontrar esta felicitación.
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+cargarFelicitacion();
+    </script>
+
+</body>
+
+</html>

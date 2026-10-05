@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crear Felicitación 💖</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ffe4ec, #fff5f8);
+            color: #4a2632;
+            min-height: 100vh;
+        }
+        
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 55px;
+            color: #d6336c;
+            margin-bottom: 10px;
+        }
+        
+        .descripcion {
+            text-align: center;
+            margin-bottom: 35px;
+            color: #76515d;
+        }
+        
+        .tarjeta {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(130, 45, 80, 0.15);
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #d6336c;
+            margin-top: 0;
+        }
+        
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .foto {
+            background: #fff0f5;
+            border: 2px dashed #e89ab4;
+            border-radius: 18px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .foto img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: none;
+        }
+        
+        .foto input {
+            width: 90%;
+            font-size: 12px;
+        }
+        
+        .texto-foto {
+            margin-bottom: 10px;
+            color: #a25d73;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            border: 2px solid #f0b4c7;
+            border-radius: 20px;
+            padding: 20px;
+            resize: vertical;
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            color: #5a2939;
+            outline: none;
+        }
+        
+        textarea:focus {
+            border-color: #d6336c;
+        }
+        
+        .boton {
+            display: block;
+            width: 100%;
+            border: none;
+            padding: 17px;
+            margin-top: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #d6336c, #e85d8c);
+            color: white;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .boton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(214, 51, 108, 0.3);
+        }
+        
+        #resultado {
+            display: none;
+            text-align: center;
+        }
+        
+        #qrcode {
+            margin: 25px auto;
+            padding: 15px;
+            background: white;
+            width: fit-content;
+            border-radius: 15px;
+        }
+        
+        .enlace {
+            background: #fff0f5;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+        
+        .enlace a {
+            color: #d6336c;
+            font-weight: bold;
+        }
+        
+        .nota {
+            font-size: 13px;
+            color: #86616d;
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Una felicitación especial 💕</h1>
+
+        <p class="descripcion">
+            Crea un recuerdo bonito para una persona especial.
+        </p>
+
+        <div class="tarjeta">
+
+            <h2>📸 Tus recuerdos</h2>
+
+            <p>
+                Puedes agregar hasta 5 fotografías.
+            </p>
+
+            <div class="galeria">
+
+                <div class="foto">
+                    <div class="texto-foto">Foto 1 💗</div>
+                    <input type="file" accept="image/*" onchange="cargarFoto(event, 0)">
+                    <img id="preview0">
+                </div>
+
+                <div class="foto">
+                    <div class="texto-foto">Foto 2 💗</div>
+                    <input type="file" accept="image/*" onchange="cargarFoto(event, 1)">
+                    <img id="preview1">
+                </div>
+
+                <div class="foto">
+                    <div class="texto-foto">Foto 3 💗</div>
+                    <input type="file" accept="image/*" onchange="cargarFoto(event, 2)">
+                    <img id="preview2">
+                </div>
+
+                <div class="foto">
+                    <div class="texto-foto">Foto 4 💗</div>
+                    <input type="file" accept="image/*" onchange="cargarFoto(event, 3)">
+                    <img id="preview3">
+                </div>
+
+                <div class="foto">
+                    <div class="texto-foto">Foto 5 💗</div>
+                    <input type="file" accept="image/*" onchange="cargarFoto(event, 4)">
+                    <img id="preview4">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta">
+
+            <h2>💌 Escribe tu carta</h2>
+
+            <textarea id="carta" placeholder="Escribe aquí tu mensaje especial... 💕"></textarea>
+
+        </div>
+
+
+        <div class="tarjeta">
+
+            <h2>✨ Crear felicitación</h2>
+
+            <p>
+                Cuando estés listo, presiona el botón para guardar tu felicitación.
+            </p>
+
+            <button class="boton" onclick="crearFelicitacion()">
+            💖 Crear felicitación
+        </button>
+
+        </div>
+
+
+        <div class="tarjeta" id="resultado">
+
+            <h2>🎉 ¡Tu felicitación está lista!</h2>
+
+            <p>
+                Este es el código QR que puedes compartir.
+            </p>
+
+            <div id="qrcode"></div>
+
+            <div class="enlace">
+
+                <strong>🔗 Enlace para compartir:</strong>
+
+                <br><br>
+
+                <a id="enlaceVer" target="_blank"></a>
+
+            </div>
+
+            <div class="enlace">
+
+                <strong>✏️ Enlace para editar:</strong>
+
+                <br><br>
+
+                <a id="enlaceEditar" target="_blank"></a>
+
+            </div>
+
+            <p class="nota">
+                Guarda el enlace de edición. Lo necesitarás si después quieres cambiar las fotos o la carta.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        let fotos = ["", "", "", "", ""];
+
+
+        function cargarFoto(event, indice) {
+
+            const archivo = event.target.files[0];
+
+            if (!archivo) {
+                return;
+            }
+
+            const lector = new FileReader();
+
+            lector.onload = function(e) {
+
+                fotos[indice] = e.target.result;
+
+                const imagen = document.getElementById("preview" + indice);
+
+                imagen.src = e.target.result;
+
+                imagen.style.display = "block";
+
+            };
+
+            lector.readAsDataURL(archivo);
+        }
+
+
+        async function crearFelicitacion() {
+
+            const carta = document.getElementById("carta").value;
+
+            if (!carta.trim() && fotos.every(foto => foto === "")) {
+
+                alert("Agrega al menos una foto o escribe una carta.");
+
+                return;
+            }
+
+            const boton = document.querySelector(".boton");
+
+            boton.disabled = true;
+
+            boton.textContent = "Creando felicitación... 💕";
+
+
+            try {
+
+                const respuesta = await fetch("/api/felicitaciones", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        carta: carta,
+                        fotos: fotos
+                    })
+
+                });
+
+
+                const datos = await respuesta.json();
+
+
+                if (!datos.correcto) {
+
+                    alert("Ocurrió un error al crear la felicitación.");
+
+                    boton.disabled = false;
+
+                    boton.textContent = "💖 Crear felicitación";
+
+                    return;
+                }
+
+
+                const enlaceVer =
+                    datos.ver && datos.ver.startsWith("http") ?
+                    datos.ver :
+                    window.location.origin + datos.ver;
+
+                const enlaceEditar =
+                    datos.editar && datos.editar.startsWith("http") ?
+                    datos.editar :
+                    window.location.origin + datos.editar;
+
+
+                document.getElementById("enlaceVer").href = enlaceVer;
+
+                document.getElementById("enlaceVer").textContent =
+                    enlaceVer;
+
+
+                document.getElementById("enlaceEditar").href =
+                    enlaceEditar;
+
+                document.getElementById("enlaceEditar").textContent =
+                    enlaceEditar;
+
+
+                const contenedorQR =
+                    document.getElementById("qrcode");
+
+                contenedorQR.innerHTML = "";
+
+
+                QRCode.toCanvas(
+                    enlaceVer, {
+                        width: 250,
+                        margin: 2
+                    },
+                    function(error, canvas) {
+
+                        if (error) {
+
+                            console.error(error);
+
+                            alert("No se pudo generar el código QR.");
+
+                            return;
+                        }
+
+                        contenedorQR.appendChild(canvas);
+
+                    }
+                );
+
+
+                document.getElementById("resultado").style.display = "block";
+
+
+                document.getElementById("resultado").scrollIntoView({
+                    behavior: "smooth"
+                });
+
+
+                boton.textContent = "✅ Felicitación creada";
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert("No se pudo conectar con el servidor.");
+
+                boton.disabled = false;
+
+                boton.textContent = "💖 Crear felicitación";
+
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>

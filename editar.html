@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Editar felicitación 💕</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient( 135deg, #ffe1eb, #fff6f9);
+            font-family: 'Montserrat', sans-serif;
+            color: #542b39;
+        }
+        
+        .contenedor {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 55px;
+            color: #d6336c;
+        }
+        
+        .tarjeta {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(120, 40, 70, 0.15);
+        }
+        
+        h2 {
+            color: #d6336c;
+        }
+        
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat( auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .foto {
+            border: 2px dashed #e89ab4;
+            border-radius: 18px;
+            padding: 10px;
+            text-align: center;
+            background: #fff4f7;
+        }
+        
+        .foto img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            font-size: 11px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 250px;
+            resize: vertical;
+            border: 2px solid #efb2c5;
+            border-radius: 20px;
+            padding: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            outline: none;
+        }
+        
+        textarea:focus {
+            border-color: #d6336c;
+        }
+        
+        button {
+            width: 100%;
+            border: none;
+            padding: 17px;
+            border-radius: 15px;
+            background: linear-gradient( 135deg, #d6336c, #e85d8c);
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .mensaje {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #e9f9ef;
+            color: #26733f;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="contenedor">
+
+        <h1>
+            Editar mi felicitación 💕
+        </h1>
+
+
+        <div class="tarjeta">
+
+            <h2>
+                📸 Fotografías
+            </h2>
+
+            <p>
+                Puedes reemplazar las fotografías.
+            </p>
+
+
+            <div class="galeria">
+
+                <div class="foto">
+
+                    <img id="preview0">
+
+                    <input type="file" accept="image/*" onchange="cambiarFoto(event, 0)">
+
+                </div>
+
+
+                <div class="foto">
+
+                    <img id="preview1">
+
+                    <input type="file" accept="image/*" onchange="cambiarFoto(event, 1)">
+
+                </div>
+
+
+                <div class="foto">
+
+                    <img id="preview2">
+
+                    <input type="file" accept="image/*" onchange="cambiarFoto(event, 2)">
+
+                </div>
+
+
+                <div class="foto">
+
+                    <img id="preview3">
+
+                    <input type="file" accept="image/*" onchange="cambiarFoto(event, 3)">
+
+                </div>
+
+
+                <div class="foto">
+
+                    <img id="preview4">
+
+                    <input type="file" accept="image/*" onchange="cambiarFoto(event, 4)">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="tarjeta">
+
+            <h2>
+                💌 Carta
+            </h2>
+
+
+            <textarea id="carta" placeholder="Escribe tu carta..."></textarea>
+
+
+        </div>
+
+
+        <div class="tarjeta">
+
+            <button onclick="guardarCambios()">
+            💖 Guardar cambios
+        </button>
+
+
+            <div class="mensaje" id="mensaje">
+                ¡Cambios guardados correctamente! 💕
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        const parametros =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const id =
+            parametros.get("id");
+
+
+        let fotos = ["", "", "", "", ""];
+
+
+        async function cargarDatos() {
+
+            if (!id) {
+
+                alert(
+                    "No se encontró el ID de la felicitación."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        `/api/felicitaciones/${id}`
+                    );
+
+
+                if (!respuesta.ok) {
+
+                    alert(
+                        "No se encontró la felicitación."
+                    );
+
+                    return;
+
+                }
+
+
+                const datos =
+                    await respuesta.json();
+
+
+                document.getElementById(
+                        "carta"
+                    ).value =
+                    datos.carta || "";
+
+
+                datos.fotos.forEach(
+                    (foto, indice) => {
+
+                        fotos[indice] = foto;
+
+                        const imagen =
+                            document.getElementById(
+                                "preview" + indice
+                            );
+
+                        imagen.src = foto;
+
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo cargar la felicitación."
+                );
+
+            }
+
+        }
+
+
+        function cambiarFoto(
+            event,
+            indice
+        ) {
+
+            const archivo =
+                event.target.files[0];
+
+
+            if (!archivo) {
+                return;
+            }
+
+
+            const lector =
+                new FileReader();
+
+
+            lector.onload =
+                function(e) {
+
+                    fotos[indice] =
+                        e.target.result;
+
+
+                    document.getElementById(
+                            "preview" + indice
+                        ).src =
+                        e.target.result;
+
+                };
+
+
+            lector.readAsDataURL(archivo);
+
+        }
+
+
+        async function guardarCambios() {
+
+            const carta =
+                document.getElementById(
+                    "carta"
+                ).value;
+
+
+            try {
+
+                const respuesta =
+                    await fetch(
+                        `/api/felicitaciones/${id}`, {
+
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                carta: carta,
+
+                                fotos: fotos
+
+                            })
+
+                        }
+                    );
+
+
+                const datos =
+                    await respuesta.json();
+
+
+                if (datos.correcto) {
+
+                    document.getElementById(
+                            "mensaje"
+                        ).style.display =
+                        "block";
+
+                } else {
+
+                    alert(
+                        datos.mensaje ||
+                        "No se pudieron guardar los cambios."
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "No se pudo conectar con el servidor."
+                );
+
+            }
+
+        }
+
+
+        cargarDatos();
+    </script>
+
+
+</body>
+
+</html>
