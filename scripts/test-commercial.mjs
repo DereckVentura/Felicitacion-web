@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {stripTypeScriptTypes} from 'node:module';
+const source=stripTypeScriptTypes(await readFile(new URL('../lib/commercial.ts',import.meta.url),'utf8'),{mode:'strip'});
+const {estimateExtra}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const pack={id:'fixture',name:'25',kind:'credits',credits:25,priceCents:2000,currency:'USD',durationDays:null};
+assert.deepEqual(estimateExtra(pack,26,2),{units:2,revenueCents:5200,costCents:4000,marginCents:1200,leftover:24});
+assert.deepEqual(estimateExtra(pack,0,2),{units:0,revenueCents:0,costCents:0,marginCents:0,leftover:0});
+assert.equal(estimateExtra(pack,1,0).marginCents,-2000);
+assert.equal(estimateExtra({...pack,priceCents:null},50,2),null);
+assert.equal(estimateExtra({...pack,currency:'EUR'},50,2),null);
+assert.equal(estimateExtra({...pack,kind:'unlimited',credits:null,durationDays:null,priceCents:5000},100,2).costCents,5000);
+assert.equal(estimateExtra({...pack,kind:'unlimited',credits:null,durationDays:10,priceCents:5000},100,2).costCents,15000);
+assert.equal(estimateExtra(pack,3,1.25).revenueCents,375);
+for(const [n,p] of [[-1,2],[1001,2],[1.5,2],[10,NaN],[10,101]])assert.throws(()=>estimateExtra(pack,n,p));
+console.log('PASS commercial calculator: pack rounding, remaining credits, zero sales, losses, quoted prices, currency, perpetual/timed unlimited and money bounds.');

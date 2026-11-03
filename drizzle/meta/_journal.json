@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1793359226372,
+      "tag": "0000_stiff_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1793399045894,
+      "tag": "0001_dry_darkhawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793502665215,
+      "tag": "0002_majestic_lady_deathstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793562336750,
+      "tag": "0003_high_microbe",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793683282121,
+      "tag": "0004_good_masque",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1793684992682,
+      "tag": "0005_new_ultimatum",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1793685928127,
+      "tag": "0006_strange_wild_child",
+      "breakpoints": true
+    }
+  ]
+}
