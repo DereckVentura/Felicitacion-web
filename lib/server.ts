@@ -377,7 +377,7 @@ export async function handleApi(request: Request): Promise<Response> {
       if(!await canReadGift(request,{id:photo.card_id,pin_hash:photo.pin_hash,edit_hash:photo.edit_hash}))throw new ApiError(403,"Desbloquea esta carta con su PIN para ver las fotos.");
       const object = await bucket().get(photo.storage_key);
       if (!object) throw new ApiError(404, "No encontramos esta foto.");
-      return new Response(object.body, { headers: { "Content-Type": photo.mime, "Content-Length": String(photo.size),
+      return new Response(object.body, { headers: { "Content-Type": photo.mime, "Content-Length": String(object.size),
         "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow", "X-Content-Type-Options": "nosniff", "Content-Disposition": "inline", "Referrer-Policy": "no-referrer" } });
     }
 
@@ -394,7 +394,7 @@ export async function handleApi(request: Request): Promise<Response> {
        const pick=(key:string,allowed:unknown[],fallback:unknown)=>{const value=o[key]??fallback;if(!allowed.includes(value))throw new ApiError(400,"Revisa "+key);return value};
        const captions=Array.isArray(o.captions)?o.captions.map(v=>text(v,"pie de foto",160)).slice(0,5):[];
        const phone=text(o.phone??"","WhatsApp",20);if(phone&&!/^\d{8,15}$/.test(phone))throw new ApiError(400,"WhatsApp debe incluir país y solo números.");
-       const options={font:pick("font",["serif","sans","hand"],"serif"),align:pick("align",["left","center","right","justify"],"center"),size:pick("size",[18,22,26,30],26),lineHeight:pick("lineHeight",[1.5,1.8,2.1],1.8),music:pick("music",["none","rosa","olivo","noche","voice"],"none"),captions,phone};
+       const options={font:pick("font",["serif","sans","hand"],"serif"),align:pick("align",["left","center","right","justify"],"center"),size:pick("size",[18,22,26,30],26),lineHeight:pick("lineHeight",[1.5,1.8,2.1],1.8),music:pick("music",["none","rosa","olivo","noche","voice","aurora","brisa","latido"],"none"),captions,phone};
        const result=await db().prepare("UPDATE cards SET gift_options=? WHERE id=? AND edit_hash=? AND sealed=0").bind(JSON.stringify(options),card.id,card.edit_hash).run();if(!result.meta.changes)throw new ApiError(409,"El sobre ya está sellado.");return response({options});
       }
       if(route==="editor/audio"&&(method==="POST"||method==="DELETE")){

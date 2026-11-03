@@ -265,6 +265,11 @@ try {
   result = await call(`media/${photoId}`, { token: editorA });
   status(result, 200, "buyer draft photo");
   check(result.headers.get("content-type") === "image/png" && result.headers.get("x-content-type-options") === "nosniff" && Buffer.compare(result.body, tinyPng) === 0, "Image bytes use their verified MIME and nosniff.");
+  const recordedSize=sqlite.prepare("SELECT size FROM photos WHERE id=?").get(photoId).size;
+  sqlite.prepare("UPDATE photos SET size=size+1000 WHERE id=?").run(photoId);
+  const legacySizeResponse=await call(`media/${photoId}`,{token:editorA});status(legacySizeResponse,200,"legacy photo size still downloadable");
+  check(legacySizeResponse.headers.get("content-length")===String(tinyPng.byteLength),"Image response uses actual R2 size rather than stale legacy metadata.");
+  sqlite.prepare("UPDATE photos SET size=? WHERE id=?").run(recordedSize,photoId);
   status(await call(`editor/photos/${photoId}`, { method: "DELETE", token: editorB }), 404, "other card capability cannot delete photo");
   data = status(await call(`public/${cardA.id}`), 200, "draft with photos stays private");
   check(!("photos" in data) && !JSON.stringify(data).includes(photoId), "Draft public response excludes photo references.");
@@ -689,6 +694,13 @@ try {
   status(await call(`audio/${privacyId}`,{cookie:privacyCookie}),404,"purged voice no longer served");
   status(await call(`removal-requests/${removal.reference}/approve`,{method:"POST",user:owner,json:{confirmed:true}}),200,"completed purge is idempotent");
   check(balance(privacyShop.id)===1,"Privacy requests and purge do not alter credit balance.");
+  const musicCard=status(await call("cards",{method:"POST",user:owner,json:{storeId:privacyShop.id,recipient:"Música"}}),201,"music library fixture");
+  const musicToken=tokenFrom(musicCard.editPath);
+  for(const music of ["rosa","olivo","noche","aurora","brisa","latido","none"]){
+   const changed=status(await call("editor/options",{method:"PATCH",token:musicToken,json:{options:{music}}}),200,"music catalog selection "+music);
+   check(changed.options.music===music,"Selected soundtrack persists without changing the QR.");
+  }
+  status(await call("editor/options",{method:"PATCH",token:musicToken,json:{options:{music:"https://untrusted.test/file.mp3"}}}),400,"arbitrary soundtrack URL rejected");
   console.log(`PASS actual API handler: ${assertions} assertions; migrations ${migrations.join(", ")}; isolated SQLite/R2 only.`);
 } finally {
   sqlite.close();
